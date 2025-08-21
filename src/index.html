@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" oncontextmenu="return false">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorldGuessr</title>
+    <link rel="icon" href="./media/icon.jpg">
+    <meta name="description" content="Explore the world with this easy, anonymous and open-source GeoGuessr alternative. Start discovering new places and cultures without needing to log in or expose your data.">
+    <meta property="og:image" content="https://worldguessr.infinityfreeapp.com/media/icon.jpg">
+    <meta property="og:title" content="WorldGuessr - GeoGuessr Alternative">
+    <meta property="og:locale" content="en_us" />
+    <meta property="og:image:secure_url" content="https://worldguessr.infinityfreeapp.com/media/icon.jpg" />
+    <meta property="og:image:type" content="image/jpg" />
+    <meta property="og:image:alt" content="WorldGuessr Logo" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="worldguessr.infinityfreeapp.com">
+    <meta property="twitter:url" content="https://worldguessr.infinityfreeapp.com/">
+    <meta name="twitter:title" content="WorldGuessr - GeoGuessr Alternative">
+    <meta name="twitter:description" content="Explore the world with this easy, anonymous and open-source GeoGuessr alternative. Learn more ...">
+    <meta name="twitter:image" content="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAtJREFUGFdjYAACAAAFAAGq1chRAAAAAElFTkSuQmCC">
+    <link rel="stylesheet" href="./static/global.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="streetview">
+        <div class="loading">
+            <i class="fa-solid fa-compass"></i>
+            <span>Loading StreetView...</span>
+        </div>
+        <iframe class="streetview" src width="600" height="450" frameborder="0" style="border:0; opacity: 0;"></iframe>
+    </div>
+    <div class="round-count hidden">
+        <div><span>Round</span> <span class="n">3</span> / 5</div>
+    </div>
+    <div class="stats-left">
+        <span class="descr">
+            XP Earned
+        </span>
+        <span class="value">
+            <i class="fa-solid fa-bolt"></i>
+            <span></span>
+        </span>
+    </div>
+    <div class="stats-right">
+        <span class="descr">
+            Time spent
+        </span>
+        <span class="value">
+            <i class="fa-solid fa-clock"></i>
+            <span></span>
+        </span>
+    </div>
+    <div class="map-container unload">
+        <div id="map" class="map"></div>
+        <button class="finish hidden" style="display: none;" onclick="app.score.calculate()">
+            <i class="fa-solid fa-flag-checkered"></i>
+            GUESS
+        </button>
+    </div>
+    <div class="options-bottom">
+        <button onclick="app.cookies.reset()" title="Manage your preferences">
+            <i class="fa-solid fa-cookie-bite"></i>
+        </button>
+        <button class="info" onclick="app.buttons.info()" title="About this streetview panorama">
+            <i class="fa-solid fa-info"></i>
+        </button>
+        <button class="respawn" onclick="app.buttons.restart()" title="Back to initial position">
+            <i class="fa-solid fa-arrows-rotate"></i>
+        </button>
+        <button class="hint" onclick="app.buttons.showHint(this)" title="Get a hint">
+            <i class="fa-solid fa-lightbulb"></i>
+        </button>
+        <button class="levelBtn" onclick="app.buttons.level()">
+            <span>-</span>
+            <div></div>
+        </button>
+    </div>
+    <div class="msg-outer hidden" style="display: none;" onclick="if(event.target==this){app.buttons.hideHint()}">
+        <div class="msg">
+            <span class="title"></span>
+            <span class="content"></span>
+            <button onclick="app.buttons.hideHint()"><i class="fa-solid fa-xmark"></i>Close</button>
+        </div>
+    </div>
+    <div class="solution hidden" style="display: none;">
+        <div style="position: relative;">
+            <div class="solution-map" id="solution"></div>
+            <div class="bottom-controls">
+                <div class="solution-stats">
+                    <span class="text"></span>
+                    <div class="stats">
+                        <span class="xp">
+                            <span></span>
+                            XP
+                        </span>
+                        <div class="progress">
+                            <div></div>
+                        </div>
+                        <span class="meters">
+                            <span></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="next-btn" onclick="app.buttons.new()">
+                <i class="fa-solid fa-check"></i>
+                NEXT
+            </div>
+        </div>
+    </div>
+    <div class="cookies-outer hidden" style="display: none;">
+        <div class="msg">
+            <span class="title">About essential cookies</span>
+            <span class="content">We need to ask you for essential cookies. Our website needs those to operate and save your scores, preferences, etc. By clicking accept, you give us permission to save byte-sized cookies onto your device.</span>
+            <div>
+                <button onclick="app.cookies.decline()">Decline</button>
+                <button class="main" onclick="app.cookies.accept()">Accept</button>
+            </div>
+        </div>
+    </div>
+    <div class="finished-round hidden" style="display: none;" onclick="if(event.target==this){app.round.new()}">
+        <div class="msg">
+            <span class="title"></span>
+            <span class="content"></span>
+            <button onclick="app.round.new()">New Round</button>
+        </div>
+    </div>
+    <div class="error hidden" style="display: none;">
+        <div onclick="app.error.hide()">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span></span>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="./static/app.js"></script>
+    <script src="./static/leaflet.js"></script>
+</body>
+</html>
