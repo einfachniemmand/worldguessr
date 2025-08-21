@@ -77,7 +77,7 @@ app = {
             app.time.paused=true;
             document.querySelector(".solution").style.display = ""
             setTimeout(()=>{document.querySelector(".solution").classList.remove("hidden")});
-            const distance = setTwoPinsSolution(app.map.selected, [app.location.current.lat,app.location.current.lon]);
+            const distance = setTwoPinsSolution([app.location.current.lat,app.location.current.lon],app.map.selected);
             document.querySelector(".solution-stats .meters").innerHTML = distance>5000 ? `<span>${Math.round(distance/1000)}</span> km` : `<span>${distance}</span> m`;
             xp = app.score.usedHint==true?mToXP(distance)/2:mToXP(distance);
             document.querySelector(".solution-stats .xp span").textContent = xp;
