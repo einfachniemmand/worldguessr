@@ -63,8 +63,8 @@
         </button>
     </div>
     <div class="options-bottom">
-        <button onclick="app.cookies.reset()" title="Manage your preferences">
-            <i class="fa-solid fa-cookie-bite"></i>
+        <button onclick="app.settings.open()" title="Manage your preferences">
+            <i class="fa-solid fa-sliders"></i>
         </button>
         <button class="info" onclick="app.buttons.info()" title="About this streetview panorama">
             <i class="fa-solid fa-info"></i>
@@ -113,6 +113,32 @@
             </div>
         </div>
     </div>
+    <div class="settings hidden" style="display: none;" onclick="if(this==event.target){app.settings.close()}">
+        <div class="msg">
+            <span class="title">Settings</span>
+            <span class="subtitle">Select a country</span>
+            <div class="country-select">
+                <div>
+                    <input value="world" type="radio" id="select-world" name="country" hidden onchange="app.events.setCountry(this.value)">
+                    <label for="select-world" class="country">World</label>
+                    <input value="germany" type="radio" id="select-germany" name="country" hidden onchange="app.events.setCountry(this.value)">
+                    <label for="select-germany" class="country">Germany</label>
+                </div>
+                <div>
+                    <input value="india" type="radio" id="select-india" name="country" hidden onchange="app.events.setCountry(this.value)">
+                    <label for="select-india" class="country">India</label>
+                    <input value="sweden" type="radio" id="select-sweden" name="country" hidden onchange="app.events.setCountry(this.value)">
+                    <label for="select-sweden" class="country">Sweden</label>
+                </div>
+            </div>
+            <div class="settings-row">
+                <button onclick="app.settings.close();setTimeout(app.cookies.reset,100)">Edit cookie preferences</button>
+                <button onclick="app.open.github()">
+                    <i class="fa-brands fa-github"></i>
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="cookies-outer hidden" style="display: none;">
         <div class="msg">
             <span class="title">About essential cookies</span>
@@ -134,6 +160,12 @@
         <div onclick="app.error.hide()">
             <i class="fa-solid fa-triangle-exclamation"></i>
             <span></span>
+        </div>
+    </div>
+    <div class="changecountry hidden">
+        <div>
+            <i class="fa-solid fa-check"></i>
+            <span>Started new round in Germany</span>
         </div>
     </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
