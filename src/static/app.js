@@ -20,7 +20,7 @@ app = {
             document.querySelector("iframe.streetview").src = buildStreetViewUrl(app.location.current.lat,app.location.current.lon,app.location.current.pano_id)
             setTimeout(()=>{
                 document.querySelector("iframe.streetview").style.opacity = "1"
-            },500)
+            },750)
             document.querySelector(`input[value="${localStorage.getItem("cRange")}"]`).checked = "checked";
             app.level.render()
             if(localStorage.getItem("cRange")=="world"){
