@@ -2,7 +2,9 @@ app = {
     location:{
         getNew:()=>{
             app.time.round++;
-            fetch("./get/location.php").then(res => res.json())
+            var country = localStorage.getItem("cRange");
+            country=country=="world"?"location":country;
+            fetch(`./get/${country}.php`).then(res => res.json())
             .then(data => {
                 app.location.current = data;
                 app.location.setCurrent()
@@ -19,7 +21,13 @@ app = {
             setTimeout(()=>{
                 document.querySelector("iframe.streetview").style.opacity = "1"
             },500)
+            document.querySelector(`input[value="${localStorage.getItem("cRange")}"]`).checked = "checked";
             app.level.render()
+            if(localStorage.getItem("cRange")=="world"){
+                document.querySelector(".hint").style.display = ""
+            }else{
+                document.querySelector(".hint").style.display = "none"
+            }
         }
     },
     buttons:{
@@ -80,9 +88,15 @@ app = {
             const distance = setTwoPinsSolution([app.location.current.lat,app.location.current.lon],app.map.selected);
             document.querySelector(".solution-stats .meters").innerHTML = distance>5000 ? `<span>${Math.round(distance/1000)}</span> km` : `<span>${distance}</span> m`;
             xp = app.score.usedHint==true?mToXP(distance)/2:mToXP(distance);
+            if(localStorage.getItem("cRange")!="world"){
+                xp=0;
+            }
             document.querySelector(".solution-stats .xp span").textContent = xp;
             document.querySelector(".solution-stats .text").textContent = app.score.usedHint==true?"Half the points since you needed a hint":xpToText(xp);
             document.querySelector(".solution-stats .progress div").style.width = xp/20 + "%";
+            if(localStorage.getItem("cRange")!="world"){
+                document.querySelector(".solution-stats .text").textContent="You can't gain XP on this map yet"
+            }
             setTimeout(()=>{
                 app.score.xp+=xp;
                 app.location.getNew()
@@ -122,6 +136,9 @@ app = {
                 },70)
             }else if(!localStorage.getItem("qLS")){
                 localStorage.setItem("qLS","0")
+            }
+            if(app.cookies.permission==true&&!localStorage.getItem("cRange")){
+                localStorage.setItem("cRange","world")
             }
             app.level.render()
         },
@@ -217,7 +234,47 @@ app = {
         } else if (elem.msRequestFullscreen) {
             elem.msRequestFullscreen();
         }
-    }
+    },
+    open:{
+        github:()=>{
+            window.open("https://github.com/einfachniemmand/worldguessr")
+        }
+    },
+    settings:{
+        open:()=>{
+            document.querySelector(".settings").style.display = "";
+            setTimeout(()=>{
+                document.querySelector(".settings").classList.remove("hidden")
+            },10)
+        },
+        close:()=>{
+            document.querySelector(".settings").classList.add("hidden");
+            setTimeout(()=>{
+                document.querySelector(".settings").style.display = "none"
+            },150)
+        }
+    },
+    events:{
+        setCountry:(c)=>{
+            localStorage.setItem("cRange",c);
+            app.round.new();
+            setTimeout(()=>{
+                document.querySelector(".changecountry span").textContent = `Started new round ${c=="world"?"":("in "+c.charAt(0).toUpperCase() + c.slice(1))}`
+                app.events.alert.open()
+            },250)
+        },
+        alert:{
+            timeout:0,
+            open:()=>{
+                document.querySelector(".changecountry").classList.remove("hidden");
+                app.events.alert.timeout = setTimeout(app.events.alert.hide,1000)
+            },
+            hide:()=>{
+                clearTimeout(app.events.alert.timeout);
+                document.querySelector(".changecountry").classList.add("hidden");
+            }
+        }
+    },
 }
 function buildStreetViewUrl(lat, lon, pan) {
   return `https://www.google.com/maps/embed?pb=!4v!6m8!1m7!1s${pan}!2m2!1d${lat}!2d${lon}!3f!4f!5f`;
@@ -276,9 +333,9 @@ function getContinent(lat, lng) {
         if (lat >= 35 && lat <= 70 && lng >= -25 && lng <= 60) return 'Europe';
         if (lat >= 5 && lat <= 80 && lng >= 60 && lng <= 180) return 'Asia';
         if (lat >= -50 && lat <= 0 && lng >= 110 && lng <= 180) return 'Oceania';
-        return 'Unknown';
+        return 'the earth'
     } else {
-        return 'Invalid coordinates';
+        return "the universe"
     }
 }
 var setXP=-1;
