@@ -162,6 +162,9 @@ div.loading i {
     font-family: "Roboto Condensed",sans-serif;
     height: 50px;
 }
+.map-container button:hover {
+    transform: scale(1.02);
+}
 .map-container button:active {
     transform: scale(0.9);
     filter: brightness(0.9);
@@ -180,6 +183,7 @@ div.loading i {
     border-radius: 20px;
     box-shadow: 0px 0px 20px 5px rgba(0,0,0,0.4);
     transform-origin: center;
+    transition-delay: 100ms;
 }
 .map-container.unload .map {
     transition: 0;
@@ -188,6 +192,7 @@ div.loading i {
     height: 515px;
     width: 600px;
     opacity: 1;
+    transition-delay: 0ms;
 }
 .options-bottom {
     position: fixed;
@@ -215,6 +220,9 @@ div.loading i {
     transition: 90ms;
     border:none;
 }
+.options-bottom button:hover {
+    transform: scale(1.02);
+}
 .options-bottom button:active {
     transform: scale(0.9);
     filter: brightness(0.9);
@@ -222,7 +230,7 @@ div.loading i {
 .options-bottom button.active {
     background:var(--accent);
 }
-.msg-outer,.cookies-outer,.finished-round {
+.msg-outer,.cookies-outer,.finished-round, .settings {
     position: fixed;
     top: 0;
     left: 0;
@@ -237,13 +245,16 @@ div.loading i {
     transition: 140ms;
 }
 .cookies-outer {
-    z-index: 98;
+    z-index: 100;
 }
-.msg-outer.hidden,.cookies-outer.hidden,.finished-round.hidden {
+.msg-outer.hidden,.cookies-outer.hidden,.finished-round.hidden, .settings.hidden {
     opacity: 0;
 }
-.msg-outer.hidden .msg,.cookies-outer.hidden .msg,.finished-round.hidden .msg {
+.msg-outer.hidden .msg,.cookies-outer.hidden .msg,.finished-round.hidden .msg,.settings .msg {
     transform: scale(0.7);
+}
+.settings.hidden .msg {
+    transform: scale(0.5);
 }
 .msg {
     background:rgba(60,60,60, 0.92);
@@ -295,6 +306,9 @@ div.loading i {
 }
 .cookies-outer .msg button:not(.main) {
     background:transparent;
+}
+.msg button:hover {
+    transform: scale(1.02);
 }
 .msg button:active {
     transform: scale(0.9);
@@ -416,6 +430,9 @@ div.loading i {
     height: 50px;
     z-index: 52;
 }
+.next-btn:hover {
+    transform: scale(1.02);
+}
 .next-btn:active {
     transform: scale(0.9);
     filter: brightness(0.9);
@@ -430,6 +447,36 @@ div.loading i {
     justify-content: center;
     transition: 150ms;
 }
+.changecountry.hidden {
+    top:-50px;
+    opacity: 0;
+}
+.changecountry {
+    z-index: 105;
+    position: fixed;
+    left: 0;
+    top:15px;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    transition: 200ms;
+    opacity: 1;
+}
+.changecountry div {
+    background:rgba(99, 180, 0, 0.9);
+    padding:10px 15px;
+    border-radius: 7.5px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: 150ms;
+}
+.changecountry div:hover {
+    transform: scale(1.02);
+}
+.changecountry div:active {
+    transform: scale(0.9);
+}
 .error.hidden {
     opacity: 0;
     top: -10px;
@@ -441,6 +488,9 @@ div.loading i {
     cursor:pointer;
     backdrop-filter: blur(5px);
     transition: 150ms;
+}
+.error div:hover {
+    transform: scale(1.02);
 }
 .error div:active {
     transform: scale(0.9);
@@ -487,6 +537,86 @@ div.loading i {
     font-weight: 800;
     font-size: 23px;
 }
+.settings .title {
+    font-size: 45px;
+    font-family: "Roboto Condensed",sans-serif;
+}
+.settings button {
+    margin-left: unset;
+    border:2px solid rgba(255,255,255,0.05);
+}
+.settings .subtitle {
+    font-size: 25px;
+    margin-top:5px;
+    margin-left: 5px;
+}
+.settings .country-select {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-left: unset;
+}
+.settings .country-select div {
+    margin-left: unset;
+    display: flex;
+    width: 100%;
+}
+.settings .country-select label {
+    width: 100%;
+    margin-right: 5px;
+    margin-left: 5px;
+    font-size: 24px;
+    padding:15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    background:rgba(80,80,80, 0.8);
+    margin-top:10px;
+    border:rgba(255,255,255,0.1) solid 2px;
+    cursor: pointer;
+    transition: 120ms;
+    font-weight: 700;
+}
+.settings .country-select label:hover {
+    transform: scale(1.02);
+}
+.settings .country-select label:active {
+    transform: scale(0.9);
+    filter: brightness(0.8);
+    font-weight: 800;
+}
+.settings-row {
+    margin-top: 15px;
+    width: 100% !important;
+    margin-left: unset !important;
+}
+.settings-row button:nth-child(1) {
+    width: 100%;
+}
+.settings-row button {
+    background:rgba(80,80,80, 0.8);
+    border:rgba(255,255,255,0.1) solid 2px;
+    margin-right: 5px;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.settings-row button i {
+    margin-right: 0;
+}
+input:checked + label.country {
+    background:var(--accent);
+    border:rgba(255,255,255,0.2) solid 4px;
+    padding:13px;
+    font-weight: 900;
+}
+input:checked + label.country::before {
+    content: "";/* fa-solid fa-check */
+    font-family: var(--fa-family,var(--fa-style-family,"Font Awesome 7 Free"));
+    margin-right: 10px;
+}
 @media only screen and (max-width: 580px) {
     .map {
         opacity: 1;
@@ -494,6 +624,7 @@ div.loading i {
         aspect-ratio: 1/1;
         width: calc(100vw - 220px);
         transition: 0ms;
+        transition-delay: none;
     }
     .map:hover,.map-container.unload .map {
         aspect-ratio: unset;
@@ -573,8 +704,11 @@ div.loading i {
     .msg {
         width: calc(100vw - 85px);
     }
+    .settings .msg {
+        width: 100vw;
+    }
     .round-count {
         z-index: 54;
         top: 80px;
     }
-}
+} 
