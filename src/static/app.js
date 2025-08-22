@@ -256,6 +256,7 @@ app = {
     },
     events:{
         setCountry:(c)=>{
+            document.querySelector("iframe.streetview").style.opacity = "0";
             localStorage.setItem("cRange",c);
             app.round.new();
             setTimeout(()=>{
