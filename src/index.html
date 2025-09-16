@@ -116,7 +116,7 @@
     <div class="settings hidden" style="display: none;" onclick="if(this==event.target){app.settings.close()}">
         <div class="msg">
             <span class="title">Settings</span>
-            <span class="subtitle">Select a country</span>
+            <span class="subtitle">Select a map</span>
             <div class="country-select">
                 <div>
                     <input value="world" type="radio" id="select-world" name="country" hidden onchange="app.events.setCountry(this.value)">
@@ -130,6 +130,12 @@
                     <input value="sweden" type="radio" id="select-sweden" name="country" hidden onchange="app.events.setCountry(this.value)">
                     <label for="select-sweden" class="country">Sweden</label>
                 </div>
+                <div>
+                    <input value="africa" type="radio" id="select-africa" name="country" hidden onchange="app.events.setCountry(this.value)">
+                    <label for="select-africa" class="country">Africa</label>
+                    <input value="potsdam" type="radio" id="select-potsdam" name="country" hidden onchange="app.events.setCountry(this.value)">
+                    <label for="select-potsdam" class="country">Potsdam & More</label>
+                </div>
             </div>
             <div class="settings-row">
                 <button onclick="app.settings.close();setTimeout(app.cookies.reset,100)">Edit cookie preferences</button>
@@ -138,6 +144,9 @@
                 </button>
             </div>
         </div>
+    </div>
+    <div class="dashboard hidden" style="display: none;">
+        <div class="msg"></div>
     </div>
     <div class="cookies-outer hidden" style="display: none;">
         <div class="msg">
