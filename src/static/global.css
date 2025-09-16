@@ -1,7 +1,11 @@
 * {
     scrollbar-width: none;
     scroll-behavior: smooth;
+    -webkit-user-select: none;
+    -moz-user-select: none; 
+    -ms-user-select: none;
     user-select: none;
+    -webkit-touch-callout: none;
 }
 body {
     margin: 0;
@@ -15,7 +19,7 @@ body {
     display: none;
 }
 .streetview {
-    height: 100vh;
+    height: 100dvh;
     width: 100vw;
     background: transparent;
 }
@@ -31,7 +35,7 @@ div.loading {
     position: absolute;
     top:0;
     left: 0;
-    height: 100vh;
+    height: 100dvh;
     width: 100vw;
     background:rgb(25,25,25);
     display: flex;
@@ -230,7 +234,7 @@ div.loading i {
 .options-bottom button.active {
     background:var(--accent);
 }
-.msg-outer,.cookies-outer,.finished-round, .settings {
+.msg-outer,.cookies-outer,.finished-round, .settings, .dashboard {
     position: fixed;
     top: 0;
     left: 0;
@@ -247,10 +251,10 @@ div.loading i {
 .cookies-outer {
     z-index: 100;
 }
-.msg-outer.hidden,.cookies-outer.hidden,.finished-round.hidden, .settings.hidden {
+.msg-outer.hidden,.cookies-outer.hidden,.finished-round.hidden, .settings.hidden, .dashboard.hidden {
     opacity: 0;
 }
-.msg-outer.hidden .msg,.cookies-outer.hidden .msg,.finished-round.hidden .msg,.settings .msg {
+.msg-outer.hidden .msg,.cookies-outer.hidden .msg,.finished-round.hidden .msg,.settings .msg, .dashboard .msg {
     transform: scale(0.7);
 }
 .settings.hidden .msg {
@@ -323,7 +327,7 @@ div.loading i {
     top:0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     z-index: 15;
     background:rgb(50,50,50);
     transition:150ms;
@@ -332,7 +336,7 @@ div.loading i {
     opacity: 0;
 }
 #solution {
-    height: 100vh;
+    height: 100dvh;
     width: 100vw;
     z-index: 0;
 }
@@ -629,7 +633,7 @@ input:checked + label.country::before {
     .map:hover,.map-container.unload .map {
         aspect-ratio: unset;
         width: calc(100vw - 10px);
-        height: 40vh;;
+        height: 40dvh;;
         z-index: 2;
     }
     .map-container {
