@@ -1,8 +1,9 @@
 app = {
+    views:0,
     location:{
         getNew:()=>{
             app.time.round++;
-            var country = localStorage.getItem("cRange");
+            var country = localStorage.getItem("cRange") ? localStorage.getItem("cRange") : "world";
             country=country=="world"?"location":country;
             fetch(`./get/${country}.php`).then(res => res.json())
             .then(data => {
@@ -13,7 +14,10 @@ app = {
                 }else{
                     document.querySelector(".info").style.display = ""
                 }
+                fitMapToBounds(app.location.current["bounds-diameter"],app.location.current["bounds-lat"],app.location.current["bounds-lng"])
             });
+            fetch("./get/views.php").then(res=>res.json())
+            .then(views=>{app.views = views.views})
         },
         current:{},
         setCurrent:()=>{
@@ -21,7 +25,7 @@ app = {
             setTimeout(()=>{
                 document.querySelector("iframe.streetview").style.opacity = "1"
             },750)
-            document.querySelector(`input[value="${localStorage.getItem("cRange")}"]`).checked = "checked";
+            document.querySelector(`input[value="${localStorage.getItem("cRange")?localStorage.getItem("cRange"):"world"}"]`).checked = "checked";
             app.level.render()
             if(localStorage.getItem("cRange")=="world"){
                 document.querySelector(".hint").style.display = ""
@@ -86,17 +90,11 @@ app = {
             document.querySelector(".solution").style.display = ""
             setTimeout(()=>{document.querySelector(".solution").classList.remove("hidden")});
             const distance = setTwoPinsSolution([app.location.current.lat,app.location.current.lon],app.map.selected);
-            document.querySelector(".solution-stats .meters").innerHTML = distance>5000 ? `<span>${Math.round(distance/1000)}</span> km` : `<span>${distance}</span> m`;
+            document.querySelector(".solution-stats .meters").innerHTML = distance>5000 ? `<span>${Math.round(distance/1000)}</span> km` : `<span>${Math.round(distance)}</span> m`;
             xp = app.score.usedHint==true?mToXP(distance)/2:mToXP(distance);
-            if(localStorage.getItem("cRange")!="world"){
-                xp=0;
-            }
-            document.querySelector(".solution-stats .xp span").textContent = xp;
-            document.querySelector(".solution-stats .text").textContent = app.score.usedHint==true?"Half the points since you needed a hint":xpToText(xp);
+            document.querySelector(".solution-stats .xp span").textContent = Math.round(xp);
+            document.querySelector(".solution-stats .text").textContent = app.score.usedHint==true?"Hints are for the weak!":xpToText(xp);
             document.querySelector(".solution-stats .progress div").style.width = xp/20 + "%";
-            if(localStorage.getItem("cRange")!="world"){
-                document.querySelector(".solution-stats .text").textContent="You can't gain XP on this map yet"
-            }
             setTimeout(()=>{
                 app.score.xp+=xp;
                 app.location.getNew()
@@ -148,7 +146,14 @@ app = {
             setTimeout(()=>{
                 document.querySelector(".cookies-outer").style.display = "none";
                 app.cookies.check()
+                document.querySelector("iframe.streetview").style.opacity = "0"
             },150)
+            setTimeout(()=>{
+                app.time.round = 0;
+                app.time.s = 0;
+                app.location.getNew()
+            },500)
+            setTimeout(app.round.show,1500)
         },
         reset:()=>{
             localStorage.removeItem("pCookies");
@@ -191,8 +196,8 @@ app = {
             },1500)
         },
         end:()=>{
-            document.querySelector(".finished-round .title").textContent = `You gained ${app.score.xp} XP this round.`;
-            document.querySelector(".finished-round .content").textContent = `You gained ${app.score.xp} XP in under ${Math.ceil(app.time.s/60)} minute${app.time.s<61?"":"s"}. ${getXPForLevel(1+Math.floor(getLevelForXP(localStorage.getItem("qLS"))))-localStorage.getItem("qLS")} XP until you reach level ${1+Math.floor(getLevelForXP(localStorage.getItem("qLS")))}`;
+            document.querySelector(".finished-round .title").textContent = `You gained ${Math.round(app.score.xp)} XP this round.`;
+            document.querySelector(".finished-round .content").textContent = `You gained ${Math.round(app.score.xp)} XP in under ${Math.ceil(app.time.s/60)} minute${app.time.s<61?"":"s"}. ${getXPForLevel(1+Math.floor(getLevelForXP(localStorage.getItem("qLS"))))-localStorage.getItem("qLS")} XP until you reach level ${1+Math.floor(getLevelForXP(localStorage.getItem("qLS")))}`;
             document.querySelector(".finished-round").style.display = "";
             setTimeout(()=>{
                 document.querySelector(".finished-round").classList.remove("hidden")
@@ -224,6 +229,7 @@ app = {
         }
     },
     fullscreen:()=>{
+        return
         var elem = document.documentElement;
         if (elem.requestFullscreen) {
             elem.requestFullscreen();
@@ -305,8 +311,9 @@ function getLevelForXP(xp) {
 }
 function mToXP (m) {
     const maxXP = 2000;
-    const minDistance = 50;
-    const maxDistance = 5500000;
+    const zoom = app.location.current.zoom ? app.location.current.zoom : 1;
+    const minDistance = 50 / zoom;
+    const maxDistance = 5500000 / zoom;
     if (m >= maxDistance) return 0;
     if (m <= minDistance) return maxXP;
     const xp = maxXP * (1 - (m - minDistance) / (maxDistance - minDistance));
@@ -339,14 +346,16 @@ function getContinent(lat, lng) {
         return "the universe"
     }
 }
-var setXP=-1;
+var setXP=0;
 function loadAllTimeStats () {
     setInterval(()=>{
         if(app.score.xp>setXP){
-            setXP++;
+            setXP+=Math.round(setXP/15);
             document.querySelector(".stats-left .value span").textContent = setXP;
+        }else{
+            document.querySelector(".stats-left .value span").textContent = app.score.xp;
         }
-    },6)
+    },20)
     setInterval(()=>{
         f=(t)=>{
             return t < 10 ? "0" + t : t;
@@ -389,12 +398,12 @@ if(window.innerWidth<581){
     document.querySelector(".round-count span").textContent = ""
 }
 window.addEventListener('error', function(event) {
-    const eventID = Math.round(Math.random()*10000)
+    const eventID = Math.round((Math.random()+1)*1000)
     app.error.print(event.message+" - "+eventID)
     console.error(`Script error ${eventID}:`, event.message, 'at', event.filename + ':' + event.lineno + ':' + event.colno);
 });
 window.addEventListener('unhandledrejection', function(event) {
-    const eventID = Math.round(Math.random()*10000)
+    const eventID = Math.round((Math.random()+1)*1000)
     app.error.print("Unhandled Promise Rejection - "+eventID)
     console.error(`Unhandled promise rejection ${eventID}:`, event.reason);
 });
