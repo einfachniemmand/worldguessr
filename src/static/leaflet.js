@@ -1,10 +1,40 @@
 // first map
 const map = L.map('map', {
     zoomControl: false
-}).fitWorld();
-document.querySelector(".map-container").classList.remove("unload");
+})
+function fitMapToBounds(diameter, lat, lng) {
+    const container = document.querySelector(".map-container");
+    container.classList.add("unload");
+
+    setTimeout(() => {
+        if (!map) return;
+
+        if (!(lat && lng && diameter)) {
+            map.fitWorld();
+        } else {
+            const R = 6378137; // Earth's radius in meters
+            const dLat = (app.location.current.zoom*80) * (diameter / 2) / R * (180 / Math.PI);
+            const dLng = (app.location.current.zoom*80) * dLat / Math.cos(lat * Math.PI / 180);
+
+            // Shift bounds relatively to the bottom right
+            const shiftFactor = 0.01; // Adjust for more/less shift
+            const offsetLat = dLat * shiftFactor;
+            const offsetLng = dLng * shiftFactor;
+
+            const bounds = [
+                [lat - dLat + offsetLat, lng - dLng + offsetLng],
+                [lat + dLat + offsetLat, lng + dLng + offsetLng]
+            ]; 
+
+            map.fitBounds(bounds, { padding: [150, 150] });
+        }
+
+        container.classList.remove("unload");
+    }, 250);
+}
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: window.innerWidth>580?'© OpenStreetMap':''
+    attribution: window.innerWidth>580?'© OSM':''
 }).addTo(map);
 const redMarker = L.icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png',
@@ -40,11 +70,6 @@ function removeMarker() {
         setTimeout(()=>{
             document.querySelector(".finish").style.display = "none";
         },150)
-        document.querySelector(".map-container").classList.add("unload");
-        setTimeout(()=>{
-            map.fitWorld()
-            document.querySelector(".map-container").classList.remove("unload");
-        },250)
     }
 }
 
