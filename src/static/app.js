@@ -1,5 +1,4 @@
 app = {
-    views:0,
     location:{
         getNew:()=>{
             app.time.round++;
@@ -32,6 +31,37 @@ app = {
             }else{
                 document.querySelector(".hint").style.display = "none"
             }
+        }
+    },
+    dashboard:{
+        show:()=>{
+            app.dashboard.render()
+            document.querySelector(".dashboard").style.display = "";
+            setTimeout(()=>{
+                document.querySelector(".dashboard").classList.remove("hidden")
+            },15)
+        },
+        hide:()=>{
+            document.querySelector(".dashboard").classList.add("hidden");
+            setTimeout(()=>{
+                document.querySelector(".dashboard").style.display = "none"
+            },150)
+        },
+        render:()=>{
+            document.querySelector(".dash-lvl span:nth-child(1)").textContent = "Level " + Math.floor(getLevelForXP(localStorage.getItem("qLS")));
+            document.querySelector(".dash-lvl span.xp-count").textContent = convertLargeNumbers(localStorage.getItem("qLS")) + " XP";
+            document.querySelector(".dash-xptonextlvl").textContent = convertLargeNumbers(getXPForLevel(1+Math.floor(getLevelForXP(localStorage.getItem("qLS"))))-localStorage.getItem("qLS")) + " XP to Level " + (Math.floor(getLevelForXP(localStorage.getItem("qLS")))+1);
+            document.querySelector(".dash-guesses .dash-map").textContent = app.views?`/ ${app.views}`:"/ -";
+            document.querySelector(".dash-guesses .n").textContent = localStorage.getItem("lvc") ? `${localStorage.getItem("lvc")}x` : "0x";
+            if(localStorage.getItem("lsH")){
+                document.querySelector(".dash-highscore .n").textContent = localStorage.getItem("lsH")>5000?localStorage.getItem("lsH")/1000:localStorage.getItem("lsH")
+                document.querySelector(".dash-highscore .unit").textContent = localStorage.getItem("lsH")>5000?"km":"m"
+            }else{
+                document.querySelector(".dash-highscore .n").innerHTML = "-"
+                document.querySelector(".dash-highscore .unit").textContent = "km"
+            }
+            document.querySelector(".dash-highscore .dash-map").textContent = localStorage.getItem("lHP") ? `in ${(localStorage.getItem("lHP").charAt(0).toUpperCase() + localStorage.getItem("lHP").slice(1))}` : "-";
+            document.querySelector(".dash-lvl div").style.width = 100*(getLevelForXP(localStorage.getItem("qLS"))-Math.floor(getLevelForXP(localStorage.getItem("qLS"))))+"%"
         }
     },
     buttons:{
@@ -78,6 +108,10 @@ app = {
                 document.querySelector(".solution").style.display = "none"
             },150)
             setTimeout(app.round.show,500)
+            app.highscore.dialog.hide()
+        },
+        level:()=>{
+            app.dashboard.show()
         }
     },
     score:{
@@ -101,6 +135,21 @@ app = {
                 removeMarker()
             },300)
             localStorage.setItem("qLS",parseInt(localStorage.getItem("qLS"))+xp)
+            if(localStorage.getItem("lvc")){
+                localStorage.setItem("lvc",(parseInt(localStorage.getItem("lvc"))+1))
+            }else{
+                localStorage.setItem("lvc","1")
+            }
+            if(localStorage.getItem("lsH")){
+                if(parseInt(localStorage.getItem("lsH"))>Math.round(distance)){
+                    app.highscore.dialog.show()
+                    localStorage.setItem("lsH",String(Math.round(distance)));
+                    localStorage.setItem("lHP",localStorage.getItem("cRange"))
+                }
+            }else{
+                localStorage.setItem("lsH",String(Math.round(distance)));
+                localStorage.setItem("lHP",localStorage.getItem("cRange"))
+            }
         },
         xp:0
     },
@@ -182,6 +231,25 @@ app = {
             },150)
         }
     },
+    highscore:{
+        dialog:{
+            show:()=>{
+                document.querySelector(".highscore-notify").style.display = ""
+                setTimeout(()=>{
+                    document.querySelector(".highscore-notify").classList.remove("hidden")
+                },15)
+                app.highscore.dialog.t = setTimeout(app.highscore.dialog.hide,30000);
+            },
+            hide:()=>{
+                clearTimeout(app.highscore.dialog.t);
+                document.querySelector(".highscore-notify").classList.add("hidden");
+                setTimeout(()=>{
+                    document.querySelector(".highscore-notify").style.display = "none";
+                },150)
+            },
+            t:0
+        }
+    },
     time:{
         paused:true,
         s:-1,
@@ -197,7 +265,7 @@ app = {
         },
         end:()=>{
             document.querySelector(".finished-round .title").textContent = `You gained ${Math.round(app.score.xp)} XP this round.`;
-            document.querySelector(".finished-round .content").textContent = `You gained ${Math.round(app.score.xp)} XP in under ${Math.ceil(app.time.s/60)} minute${app.time.s<61?"":"s"}. ${getXPForLevel(1+Math.floor(getLevelForXP(localStorage.getItem("qLS"))))-localStorage.getItem("qLS")} XP until you reach level ${1+Math.floor(getLevelForXP(localStorage.getItem("qLS")))}`;
+            document.querySelector(".finished-round .content").textContent = `You gained ${Math.round(app.score.xp)} XP in under ${Math.ceil(app.time.s/60)} minute${app.time.s<61?"":"s"}. ${convertLargeNumbers(getXPForLevel(1+Math.floor(getLevelForXP(localStorage.getItem("qLS"))))-localStorage.getItem("qLS"))} XP until you reach level ${1+Math.floor(getLevelForXP(localStorage.getItem("qLS")))}`;
             document.querySelector(".finished-round").style.display = "";
             setTimeout(()=>{
                 document.querySelector(".finished-round").classList.remove("hidden")
@@ -229,7 +297,6 @@ app = {
         }
     },
     fullscreen:()=>{
-        return
         var elem = document.documentElement;
         if (elem.requestFullscreen) {
             elem.requestFullscreen();
@@ -244,6 +311,9 @@ app = {
     open:{
         github:()=>{
             window.open("https://github.com/einfachniemmand/worldguessr")
+        },
+        legal:()=>{
+            window.open("https://legal.bennokahmann.me/?canclosetab=t")
         }
     },
     settings:{
@@ -309,11 +379,21 @@ function getLevelForXP(xp) {
     const progress = (xp - prevXP) / (requiredXP - prevXP);
     return level + progress;
 }
+function convertLargeNumbers(n) {
+    if (n >= 1000000) {
+        return (n / 1000000).toFixed(n % 1000000 === 0 ? 0 : 1) + "M";
+    } else if (n >= 1000) {
+        return (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1) + "K";
+    } else {
+        return n.toString();
+    }
+}
 function mToXP (m) {
     const maxXP = 2000;
     const zoom = app.location.current.zoom ? app.location.current.zoom : 1;
-    const minDistance = 50 / zoom;
-    const maxDistance = 5500000 / zoom;
+    const exponent = 1.6;
+    const minDistance = 50 / Math.pow(zoom, exponent);
+    const maxDistance = 5500000 / Math.pow(zoom, exponent);
     if (m >= maxDistance) return 0;
     if (m <= minDistance) return maxXP;
     const xp = maxXP * (1 - (m - minDistance) / (maxDistance - minDistance));
@@ -350,12 +430,12 @@ var setXP=0;
 function loadAllTimeStats () {
     setInterval(()=>{
         if(app.score.xp>setXP){
-            setXP+=Math.round(setXP/15);
+            setXP+=Math.ceil(app.score.xp/90);
             document.querySelector(".stats-left .value span").textContent = setXP;
         }else{
             document.querySelector(".stats-left .value span").textContent = app.score.xp;
         }
-    },20)
+    },30)
     setInterval(()=>{
         f=(t)=>{
             return t < 10 ? "0" + t : t;
