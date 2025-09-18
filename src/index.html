@@ -75,7 +75,7 @@
         <button class="hint" onclick="app.buttons.showHint(this)" title="Get a hint">
             <i class="fa-solid fa-lightbulb"></i>
         </button>
-        <button class="levelBtn" onclick="app.buttons.level()">
+        <button class="levelBtn" onclick="app.buttons.level()" title="Open dash">
             <span>-</span>
             <div></div>
         </button>
@@ -107,9 +107,15 @@
                     </div>
                 </div>
             </div>
-            <div class="next-btn" onclick="app.buttons.new()">
-                <i class="fa-solid fa-check"></i>
-                NEXT
+            <div class="next-btn-outer">
+                <div class="save-now-button" onclick="app.error.print('This feature is not yet available.')">
+                    <i class="fa-regular fa-bookmark"></i>
+                    <i class="fa-solid fa-bookmark"></i>
+                </div>
+                <div class="next-btn" onclick="app.buttons.new()">
+                    <i class="fa-solid fa-check"></i>
+                    NEXT
+                </div>
             </div>
         </div>
     </div>
@@ -143,12 +149,51 @@
                     <i class="fa-brands fa-github"></i>
                 </button>
             </div>
+            <span class="settings-legal" onclick="app.open.legal()">Legal details & ToS</span>
         </div>
     </div>
-    <div class="dashboard hidden" style="display: none;">
-        <div class="msg"></div>
+    <div class="dashboard hidden" style="display: none;" onclick="if(event.target==this){app.dashboard.hide()}">
+        <div class="msg">
+            <span class="title">Dashboard</span>
+            <span class="dash-xptonextlvl"></span>
+            <div class="dash-lvl">
+                <span></span>
+                <span class="xp-count"></span>
+                <div></div>
+            </div>
+            <div class="line">
+                <div class="dash-highscore">
+                    <span class="label">
+                        <i class="fa-solid fa-bullseye"></i>
+                        Closest guess
+                    </span>
+                    <div>
+                        <span class="line">
+                            <span class="n"></span>
+                            <span class="unit"></span>
+                        </span>
+                        <span class="dash-map"></span>
+                    </div>
+                </div>
+                <div class="dash-guesses">
+                    <span class="label">
+                        <i class="fa-solid fa-hashtag"></i>
+                        Times played
+                    </span>
+                    <div>
+                        <span class="line"><span class="n"></span></span>
+                        <span class="dash-map"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="saved-btn" onclick="app.error.print('This feature is not yet available.')">
+                <i class="fa-regular fa-bookmark"></i>
+                <span>Saved</span>
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
     </div>
-    <div class="cookies-outer hidden" style="display: none;">
+    <div class="cookies-outer hidden" style="display: none;" onclick="if(this==event.target){app.cookies.decline()}">
         <div class="msg">
             <span class="title">About essential cookies</span>
             <span class="content">We need to ask you for essential cookies. Our website needs those to operate and save your scores, preferences, etc. By clicking accept, you give us permission to save byte-sized cookies onto your device.</span>
@@ -175,6 +220,12 @@
         <div>
             <i class="fa-solid fa-check"></i>
             <span>Started new round in Germany</span>
+        </div>
+    </div>
+    <div class="highscore-notify hidden" style="display: none;" onclick="app.highscore.dialog.hide()">
+        <div>
+            <i class="fa-solid fa-trophy"></i>
+            <span>New Highscore</span>
         </div>
     </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
