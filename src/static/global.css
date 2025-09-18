@@ -269,11 +269,147 @@ div.loading i {
 .msg-outer.hidden,.cookies-outer.hidden,.finished-round.hidden, .settings.hidden, .dashboard.hidden {
     opacity: 0;
 }
-.msg-outer.hidden .msg,.cookies-outer.hidden .msg,.finished-round.hidden .msg,.settings .msg, .dashboard .msg {
+.msg-outer.hidden .msg,.cookies-outer.hidden .msg,.finished-round.hidden .msg,.settings .msg, .dashboard.hidden .msg {
     transform: scale(0.7);
 }
 .settings.hidden .msg {
     transform: scale(0.5);
+}
+.dashboard .msg {
+    max-width: 480px;
+    min-width: 480px;
+    --btn-bg: rgba(62,62,62,0.8)
+}
+.dashboard .msg div {
+    margin:unset;
+    padding:unset;
+}
+.dashboard .dash-lvl, .dash-highscore div, .dash-guesses div {
+    transition: 140ms;
+}
+.dashboard .dash-lvl:hover, .dash-highscore div:hover, .dash-guesses div:hover {
+    transform: scale(1.01);
+}
+.dashboard .dash-lvl:active, .dash-highscore div:active, .dash-guesses div:active {
+    filter:brightness(0.9);
+    transform: scale(0.90);
+} 
+.dashboard .dash-lvl:active {
+    transform: scale(0.96);
+}
+.dashboard .dash-lvl {
+    width: calc(100% - 29px);
+    display: flex;
+    align-items: center;
+    padding:10px !important;
+    padding-left: 13px !important;
+    overflow: hidden;
+    position:relative;
+    border-radius: 15px;
+    font-size: 21px;
+    font-family: "Roboto Condensed",sans-serif;
+    font-weight: 900;
+    backdrop-filter: blur(10px);
+    background:rgba(80, 80, 80, 0.8);
+    border:rgba(255,255,255,0.1) solid 1.5px;
+    margin-bottom:5px !important;
+}
+.dashboard .dash-xptonextlvl {
+    display: block;
+    text-align: right;
+    color:rgba(255,255,255,0.7);
+    font-family: "Nunito Sans",sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top:10px;
+}
+.dash-highscore, .dash-guesses {
+    display: flex;
+    flex-direction: column;
+    width: 100% !important;
+}
+.dash-highscore div, .dash-guesses div {
+    border-radius: 12px;
+    width: calc(100% - 35px) !important;
+    border:rgba(255,255,255,0.1) solid 1.5px;
+    display: flex;
+    flex-direction: column;
+    padding:10px !important;
+    align-items: center;
+    justify-content: center;
+    background:rgba(80, 80, 80, 0.8);
+}
+ .dash-guesses div {
+    width: calc(100% - 30px) !important;
+ }
+.dashboard span.line {
+    font-size: 21px;
+    font-family: "Nunito Sans",sans-serif;
+    font-weight: 900;
+}
+.dashboard span.unit {
+    font-weight: 600;
+}
+.dashboard div.line {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+.dashboard .dash-map {
+    color:rgba(255,255,255,0.6);
+    font-size: 15px;
+}
+.dashboard .label {
+    margin-bottom:5px;
+    margin-left: 2px;
+    margin-top:7px
+}
+.dashboard .saved-btn {
+    margin-top:15px !important;
+    width: calc(100% - 30px);
+    padding:10px !important;
+    background:rgba(80, 80, 80, 0.8);
+    transition: 120ms;
+    font-weight: 800;
+    border:rgba(255,255,255,0.1) solid 1.5px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    font-size: 17px;
+    cursor: pointer;
+}
+.dashboard .saved-btn span {
+    margin-left: 5px;
+}
+.dashboard .saved-btn i:nth-child(1) {
+    font-size: 19px;
+}
+.dashboard .saved-btn i:nth-child(3) {
+    display: flex;
+    margin-left:auto;
+    color:rgba(255,255,255,0.4);
+}
+.dashboard .saved-btn:hover {
+    transform: scale(1.02);
+}
+.dashboard .saved-btn:active {
+    transform: scale(0.96);
+    filter:brightness(0.8);
+}
+.dashboard .dash-lvl .xp-count {
+    color:rgba(255,255,255,0.6);
+    margin-left: 10px;
+    display: inline-flex;
+}
+.dashboard .dash-lvl div {
+    width: 0%;
+    position: absolute;
+    left: 0;
+    top:0;
+    height: 100%;
+    background:var(--accent);
+    z-index:-1;
 }
 .msg {
     background:rgba(60,60,60, 0.92);
@@ -317,6 +453,46 @@ div.loading i {
     display: flex;
     width: fit-content;
     margin-left:auto;
+}
+.highscore-notify.hidden {
+    top: -75px
+}
+.highscore-notify {
+    position: fixed;
+    top:15px;
+    left: 0;
+    z-index: 98;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: fit-content;
+    transition: 140ms;
+}
+.highscore-notify div {
+    padding:10px 15px;
+    background:rgba(182, 154, 29,0.9);
+    border-radius: 10px;
+    font-size: 19px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 120ms;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 0 15px rgba(195,165,45);
+    backdrop-filter: blur(10px);
+}
+.highscore-notify div:hover {
+    transform: scale(1.02);
+}
+.highscore-notify div:active {
+    scale: 0.95;
+    filter:brightness(0.95)
+}
+.highscore-notify i {
+    font-size: 22px;
+    margin-right: 5px;
 }
 .cookies-outer .msg button.main {
     background:var(--accent);
@@ -425,9 +601,6 @@ div.loading i {
     height: 5px;
 }
 .next-btn {
-    position: absolute;
-    bottom: 15px;
-    right: 10px;
     width: 100px;
     display: flex;
     align-items: center;
@@ -447,12 +620,46 @@ div.loading i {
     border:3px solid rgba(255,255,255,0.2);
     font-family: "Roboto Condensed",sans-serif;
     height: 50px;
-    z-index: 52;
 }
-.next-btn:hover {
+.next-btn-outer {
+    position: absolute;
+    bottom: 15px;
+    right: 10px;
+    z-index: 52;
+    display: flex;
+}
+.save-now-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top:10px;
+    background: rgba(70,70,70, 0.8);
+    backdrop-filter: blur(10px);
+    color:inherit;
+    font-size: 19px;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    transition: 150ms;
+    border:3px solid rgba(255,255,255,0.2);
+    font-family: "Roboto Condensed",sans-serif;
+    height: 50px;
+    aspect-ratio: 1/1;
+    margin-right: 10px;
+}
+.save-now-button i.fa-solid {
+    display: none;
+}
+.save-now-button:active i.fa-solid {
+    display: block;
+}
+.save-now-button:active i.fa-regular {
+    display: none;
+}
+.next-btn:hover, .save-now-button:hover {
     transform: scale(1.02);
 }
-.next-btn:active {
+.next-btn:active, .save-now-button:active {
     transform: scale(0.9);
     filter: brightness(0.9);
 }
@@ -712,16 +919,29 @@ input:checked + label.country::before {
         border-bottom-right-radius: 0;
     }
     .next-btn {
-        right:unset;
-        left: 0;
         width: 100%;
-        bottom:0;
         border-radius: 0;
         box-shadow: none;
         border:none;
     }
+    .save-now-button {
+        margin:0;
+        box-shadow: none;
+        border-radius: 0;
+        border:none;
+    }
+    .next-btn-outer {
+        width: 100vw;
+        right:unset;
+        left: 0;
+        bottom:0;
+        margin:0;
+        margin-top:-10px;
+    }
     .msg {
-        width: calc(100vw - 85px);
+        width: calc(100vw - 85px) !important;
+        max-width: calc(100vw - 85px) !important;
+        min-width: calc(100vw - 85px) !important;
     }
     .settings .msg {
         width: 100vw;
